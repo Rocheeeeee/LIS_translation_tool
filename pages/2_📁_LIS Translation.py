@@ -131,7 +131,7 @@ st.markdown('---')
 st.write("Have you uploaded your own dictionary at the **Upload Dictionary** page?")
 upload = st.checkbox('Yes, I uploaded a dictionary.')
 st.info('If this is the first time translating this file or you did not upload your dictionary,\
-         please **DO NOT CHECK** the box or uncheck the box.')
+         please **DO NOT CHECK** the box.')
 try:
     # create copy for baseDict
     panelDict = baseDict.copy()
@@ -142,7 +142,7 @@ try:
         panelDict.update(newDict)
         st.session_state.panelDict = panelDict
 except AttributeError:
-    st.error("ERROR: You did not upload your dictionary. Please visit **Upload Dictionary** page to upload your dictionary.")
+    st.error("ERROR: You did not upload your dictionary. Please visit **Upload Dictionary** page to upload your dictionary or uncheck the box.")
 
 
 # Start matching
