@@ -11,11 +11,12 @@ st.set_page_config(page_title="LIS Translation Tool", page_icon='🗃️',
 
 
 st.title('🗃️LIS File Translation Tool🧰⚙️')
-st.header('View and Download Base Dictionary')
+st.header('👀View and Download Base Dictionary')
 
 base_dict = f.load_json('data/base_dict.json')
 base_dict = pd.DataFrame.from_dict(base_dict, orient='index').reset_index(drop = False)
-base_dict.rename(columns={'index': 'LIS Test Name', 'AssayName': 'Assay Name'}, inplace = True)
+base_dict.rename(columns={'index': 'LIS Test Name'}, inplace = True)
+base_dict['Assay Name'] = base_dict['Assay Name'].apply(lambda lst: ','.join(lst))
 
 with st.expander('Click here to see the interactivity of the table'):
     st.markdown("""
