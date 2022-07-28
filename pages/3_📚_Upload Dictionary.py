@@ -70,18 +70,22 @@ if uploaded_dict is not None:
                     test_name = row['Test Name']
                     include = row['Include']
                     material = row['Material']
-                    assay = row['Assay Name']
+                    assay = row['Assay Name'] # a long string of tests
 
                     # assay name of 'NA' only may be read in as NaN in python. add a space after it to avoid
                     if assay == 'NA':
                         assay = 'NA '
 
+                    # split the assay into a list of tests
+                    assay = assay.split(',') # a list
+
                     # Only update the translation with include == 1 to the base dictionary
                     if include == 1:
-                        newDict[test_name] = {'Include': include, 'Material': material, 'AssayName': assay}
+                        newDict[test_name] = {'Include': include, 'Material': material, 'Assay Name': assay}
 
                 st.session_state.newDict = newDict
                 st.success('🎉 Dicitonary uploaded successfully')
+                st.write(newDict)
 
         except KeyError:
             st.warning('🚨 Your dictionary does not follow the naming conventions. Column names should be **Test Name**, **Include**, **Material**, **Assay Name**.')
