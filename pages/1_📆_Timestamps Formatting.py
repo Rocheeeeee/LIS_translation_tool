@@ -155,7 +155,7 @@ if uploaded_file is not None:
                     # formate date columns
                     for col in date_columns:
                         try:
-                            filled_data[col] = filled_data[col].apply(lambda d: parser.parse(d).strftime('%m%d%Y'))
+                            filled_data[col] = filled_data[col].apply(lambda d: parser.parse(d).date())
                             st.session_state.filled_data = filled_data
                         except parser.ParserError:
                             st.error("🚨ERROR: There is unknown format of date that cannot be parsed by the program.")
