@@ -20,7 +20,7 @@ st.set_page_config(page_title="LIS Translation Tool", page_icon='🗃️',
 
 
 st.title('🗃️LIS File Translation Tool🧰⚙️')
-st.header('LIS Translation')
+st.header('📁LIS Translation')
 st.subheader('Use the similarity scores to find the most similar LIS test name in the dictionary and translate into Roche Assay names')
 with st.expander('Click here to view the instructions'):
     st.markdown("""
@@ -90,8 +90,8 @@ if uploaded_file is not None:
         # Let user select the columns for 5 columns worksheet
         # Patient_ID	Priority	TimeStamp	TestName	Material
         column_options = st.multiselect(
-        'Select up to 3 column names for the 5 column worksheet', LIS_sheet.columns)
-        st.info('Suggestion: Patient_ID, Priority, TimeStamp')
+        'Select the columns for Patient_ID, Priority, TimeStamp of completion for the 5 column worksheet', LIS_sheet.columns)
+        st.info('Note: assay and material will be updated in a future step.')
         if len(column_options) > 3:
             st.warning("You can only select 3 columns at most.")
         st.session_state.columns_for_5 = column_options
