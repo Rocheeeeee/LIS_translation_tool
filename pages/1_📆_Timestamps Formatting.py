@@ -182,7 +182,8 @@ if uploaded_file is not None:
 
             st.caption('Please scroll to the right to see the newly created columns')
             st.caption("<NA> means there is no value in the cell")
-
+            
+            st.warning("The result file is still generating, please wait until the download button show up...")
 
             # Formatting the new file name
             today = datetime.today().strftime("%Y%m%d%H%M")+'_'
@@ -194,3 +195,7 @@ if uploaded_file is not None:
             st.download_button(label='📥 Download Current Result 📥',
                                             data=df_xlsx,
                                             file_name= new_file_name)
+            st.success("🎉 File successfully generated. Please click on the download button to download.")
+            
+            
+            
