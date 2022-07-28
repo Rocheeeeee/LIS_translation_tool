@@ -36,7 +36,7 @@ with st.expander('Click here to view the instructions'):
     """)
 
 ## Section 1: Upload the excel file that need translation
-st.header('Upload Raw Data')
+st.header('Upload LIS file')
 uploaded_file = st.file_uploader("Select the file which needs translation:", type=['xlsx'])
 st.info('Please only upload excel file.')
 
@@ -49,16 +49,12 @@ if uploaded_file is not None:
     # get the file name of raw data
     st.session_state.file_name = uploaded_file.name
 
-    # Not sure if it need to read in all the sheets in the excel cuz it's time consuming if the file is too big
-    # # read in all the sheets in the uploaded excel file
-    # dict_of_df = f.load_all_sheets(uploaded_file)
-    # st.session_state.dict_of_df = dict_of_df
-
     LIS_file = pd.ExcelFile(uploaded_file)
     all_sheets = ['(Not Selected Yet)'] + LIS_file.sheet_names
     
     ## User select the sheet name that needs translation
-    selected_sheet = st.selectbox('Select the sheet with raw data:', all_sheets)
+    selected_sheet = st.selectbox('Select the sheet with LIS file:', all_sheets)
+    st.info("Recommend select the time formatted LIS file.")
 
     ## to read the selected sheet to dataframe and display the sheet:
     if selected_sheet != '(Not Selected Yet)':
@@ -90,10 +86,12 @@ if uploaded_file is not None:
         # Let user select the columns for 5 columns worksheet
         # Patient_ID	Priority	TimeStamp	TestName	Material
         column_options = st.multiselect(
-        'Select the columns for Patient_ID, Priority, TimeStamp of completion for the 5 column worksheet', LIS_sheet.columns)
+        'Select the columns for Priority, TimeStamp of completion for the 5 column worksheet', LIS_sheet.columns)
         st.info('Note: assay and material will be updated in a future step.')
-        if len(column_options) > 3:
-            st.warning("You can only select 3 columns at most.")
+        if len(column_options) > 2:
+            st.warning("You can only select 2 columns at most.")
+        elif len(column_options) == 1:
+            st.warning("You missed selecting one column.")
         st.session_state.columns_for_5 = column_options
 
         if st.button('📤 Upload Raw Data'):
@@ -110,10 +108,10 @@ if uploaded_file is not None:
                 st.success('🎉 File uploaded successfully')
 
             except AttributeError:
-                st.error("🚨 There are invalid test names")
+                st.error("🚨ERROR: There are invalid test names")
 
             except KeyError:
-                st.warning("🚨 You haven't selected the column for patient ID or LIS test name")
+                st.error("🚨ERROR: You haven't selected the column for patient ID or LIS test name")
 
     
 #=======================================================================================================#
@@ -142,14 +140,14 @@ try:
         panelDict.update(newDict)
         st.session_state.panelDict = panelDict
 except AttributeError:
-    st.error("ERROR: You did not upload your dictionary. Please visit **Upload Dictionary** page to upload your dictionary or uncheck the box.")
+    st.error("🚨ERROR: You did not upload your dictionary. Please visit **Upload Dictionary** page to upload your dictionary or uncheck the box.")
 
 
 # Start matching
 if st.button('Click here to start matching'):
     list_of_LIS = st.session_state.list_of_LIS
     if list_of_LIS == []:
-        st.warning("You haven't uploaded raw file yet")
+        st.error("🚨ERROR: You haven't uploaded raw file yet")
     else:
         # Get unique test names from all LIS objects
         tests = list(set(x.getTestName() for x in list_of_LIS))
@@ -180,11 +178,12 @@ if st.button('Click here to start matching'):
                                         'SimilarTest': best_match,
                                         'AssayName': panelDict[best_match]['AssayName'],
                                         'ConfidenceScore': round(score*100,2)}
+            # no tests in dictionary has a least the threshold similarity to test
             else:
-                match_result[test] = {'Include':1, 
-                                        'Material': '',
+                match_result[test] = {'Include':0, 
+                                        'Material': ' ',
                                         'SimilarTest': 'No similar test found',
-                                        'AssayName': '',
+                                        'AssayName': ' ',
                                         'ConfidenceScore': 0}
             st.session_state.match_result = match_result
 
@@ -193,14 +192,7 @@ if st.button('Click here to start matching'):
         # match_result: a dictionary of panel definitions for LIS tests in raw data
         # @output
         # panel_df: a formatted dataframe for panel definition (will be one of the sheet in the excel output)
-        panel_df = pd.DataFrame()
-        for key, value in match_result.items():
-            tmp = pd.DataFrame([[key, value['Include'], value['Material'], 
-                                value['SimilarTest'], value['AssayName'], 
-                                value['ConfidenceScore']]])
-            panel_df = pd.concat([panel_df, tmp])
-            st.session_state.panel_df = panel_df
-
+        panel_df = pd.DataFrame.from_dict(match_result, orient='index').reset_index(drop = False)
         panel_df.columns = ['Test Name', 'Include', 'Material', 'Similar Test',
                             'Assay Name', 'Confidence Score']
         panel_df.sort_values('Confidence Score', ascending = False, inplace = True)
@@ -225,6 +217,7 @@ if st.button('Click here to start matching'):
 
         #### Remove the tests from the result_df if Include == 0
         for index, row in result_df.iterrows():
+            # row[LIS_column]: TEST NAME, also the key in match_result
             if match_result[row[LIS_column]]['Include'] == 1:
                 result_df.loc[index,'Similar Test'] = match_result[row[LIS_column]]['SimilarTest']
                 result_df.loc[index,'Material'] = match_result[row[LIS_column]]['Material']
@@ -233,6 +226,7 @@ if st.button('Click here to start matching'):
             else:
                 result_df.drop(index, axis=0, inplace = True)
             st.session_state.result_df = result_df
+        result_df.reset_index(drop = True, inplace = True)
 
 
     # STEP 4: generate Graph Data Worksheet and 5 column worksheet
@@ -244,16 +238,17 @@ if st.button('Click here to start matching'):
         graph_data = graph_data.assign(Assay_Name = graph_data['Assay Name'].str.split(','))
         graph_data = graph_data.explode('Assay_Name')
         graph_data.drop(['Assay Name'], axis=1, inplace=True)
-        graph_data = graph_data.rename(columns = {'Assay_Name': 'Assay Name'})
+        graph_data.rename(columns = {'Assay_Name': 'Assay Name'}, inplace = True)
 
 
         # 5 columns worksheet
         # the columns that user selected from raw data and translated assay names and material of the test
-        columns = st.session_state.columns_for_5 + ['Material', 'Assay Name']
+        columns = [ID_column] + st.session_state.columns_for_5 + ['Material', 'Assay Name']
         five_column_df = result_df.copy().loc[:, columns]
         five_column_df = five_column_df.assign(Assay_Name = five_column_df['Assay Name'].str.split(','))
         five_column_df = five_column_df.explode('Assay_Name').drop(['Assay Name'], axis=1)
         five_column_df.rename(columns = {'Assay_Name': 'Assay Name'}, inplace = True)
+        five_column_df.reset_index(drop = True, inplace = True)
 
 
         # Preview results
@@ -263,7 +258,6 @@ if st.button('Click here to start matching'):
             st.caption("<NA> means there is no value in the cell")
             st.markdown('---')
             st.write('The result data with translation and confidence score')
-            st.dataframe(result_df)
             st.dataframe(result_df.style.format({'Confidence Score': '{:.2f}'}))
             st.caption("<NA> means there is no value in the cell")
             st.markdown('---')
@@ -273,16 +267,18 @@ if st.button('Click here to start matching'):
 
 
         st.warning("The result file is still generating, please wait until the download button show up...")
+
         # Formatting the new file name
         today = datetime.today().strftime("%Y%m%d%H%M")+'_'
         new_file_name = 'Translated_' + today + st.session_state.file_name
          
         # output the excel file and let the user download
         sheet_name_list = ['Panel Definitions', 'Graph Data Worksheet', '5 Column Worksheet',
-                    'Raw data with matching results', 'Raw Data']
+                    'Raw data with matching results', 'Formatted Raw Data']
         df_list = [panel_df, graph_data, five_column_df, result_df, raw_data]
         df_xlsx = f.dfs_to_excel(df_list, sheet_name_list)
         st.download_button(label='📥 Download Current Result 📥',
                                         data=df_xlsx,
                                         file_name= new_file_name)
+        st.success("🎉 File successfully generated. Please click on the download button to download.")
 
