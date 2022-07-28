@@ -6,6 +6,7 @@ import functions as f
 from datetime import datetime
 from dateutil import parser
 
+
 st.set_page_config(page_title="LIS Translation Tool", page_icon='🗃️', 
                 layout="wide",
                 initial_sidebar_state="expanded",
@@ -15,7 +16,7 @@ st.set_page_config(page_title="LIS Translation Tool", page_icon='🗃️',
 
 
 st.title('🗃️LIS File Translation Tool🧰⚙️')
-st.header('Timestamps Formatting')
+st.header('📆Timestamps Formatting')
 st.subheader('Fill in the missing timestamps and format the date and time')
 with st.expander('Click here to view the instructions'):
     st.markdown("""
@@ -51,8 +52,7 @@ if uploaded_file is not None:
 
         with st.expander("Click here to check the file you uploaded"):
             st.write("Number of observations: " + str(len(raw_data)))
-            st.write("Here are the first 10 rows of raw data")
-            st.write(raw_data.head(10))
+            st.write(raw_data)
             st.caption("<NA> means there is no value in the cell")
 
         all_columns = ['(Not Selected Yet)'] + list(raw_data.columns)
@@ -72,6 +72,7 @@ if uploaded_file is not None:
             filled_data = raw_data.copy()
             st.session_state.filled_data = filled_data
 
+        # date and time are together in one column
             if presentation == 'One Column':
                 # select the timestamp columns
                 datetime_columns = st.multiselect("Please select the columns of timestamps that need formatting.\
@@ -90,7 +91,7 @@ if uploaded_file is not None:
                     filled_data.dropna(subset = datetime_columns, how='any', inplace = True)
                     st.session_state.filled_data = filled_data
 
-                    # select delimiter
+                    # select delimiter between date and time
                     delimiter = st.selectbox('Select the delimiter that separates date and time in timestamp columns',
                                     ('Please Select', 'Space', '@', '_', ';'))
                     if delimiter == 'Space':
@@ -120,11 +121,12 @@ if uploaded_file is not None:
                                 # separate the timestamp into Date and Time columns
                                 date_col = col + '__Date'
                                 time_col = col + '__Time'
-                                filled_data[date_col] = filled_data[col].apply(lambda dt: dt.strftime('%Y-%m-%d'))
-                                filled_data[time_col] = filled_data[col].apply(lambda dt: str(dt.time()))
+                                # filled_data[date_col] = filled_data[col].apply(lambda dt: dt.strftime('%m%d%Y'))
+                                filled_data[date_col] = filled_data[col].apply(lambda dt: dt.date())
+                                filled_data[time_col] = filled_data[col].apply(lambda dt: dt.time())
 
                             except parser.ParserError:
-                                 st.error('ERROR: Please make sure you select the correct delimiter for column '+ col)
+                                 st.error('🚨ERROR: Please make sure you select the correct delimiter for column '+ col)
                     
 
             elif presentation == 'Separate Columns':
@@ -153,10 +155,10 @@ if uploaded_file is not None:
                     # formate date columns
                     for col in date_columns:
                         try:
-                            filled_data[col] = filled_data[col].apply(lambda d: parser.parse(d).strftime('%Y-%m-%d'))
+                            filled_data[col] = filled_data[col].apply(lambda d: parser.parse(d).strftime('%m%d%Y'))
                             st.session_state.filled_data = filled_data
                         except parser.ParserError:
-                            st.error("ERROR: There is unknown format of date that cannot be parsed by the program.")
+                            st.error("🚨ERROR: There is unknown format of date that cannot be parsed by the program.")
 
                     # format the time columns:
                     for col in time_columns:
@@ -164,10 +166,7 @@ if uploaded_file is not None:
                             filled_data[col] = filled_data[col].apply(lambda t: str(parser.parse(t).time()))
                             st.session_state.filled_data = filled_data
                         except parser.ParserError:
-                            st.error("ERROR: There is unknown format of time that cannot be parsed by the program.")
-
-
-            # calculate turn around time
+                            st.error("🚨ERROR: There is unknown format of time that cannot be parsed by the program.")
 
 
             st.markdown('---')
@@ -176,9 +175,11 @@ if uploaded_file is not None:
             - **The program would use the current datetime to make up for any missing parts of the timestamp**
             - For example, in the parsing of '12/20' , which got parsed as 2022-12-20 as 2022 is the current year
             - If a time is not supplied then 00:00:00 is used
+            - The new columns for __TIME are displayed in milliseconds. It will be in the format of hh:mm:ss in excel file.
             """)
             st.write("There are " + str(len(raw_data) - len(filled_data)) + " rows be dropped because of missing timestamps")
             st.write(filled_data)
+
             st.caption('Please scroll to the right to see the newly created columns')
             st.caption("<NA> means there is no value in the cell")
 
