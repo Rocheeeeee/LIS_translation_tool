@@ -29,11 +29,12 @@ with st.expander('Click here to view the instructions'):
 
 
 # function
-def format_date(date: str, time: str):
-    date1 = datetime.strptime(date, '%Y-%m-%d')
+def format_date(date, time):
+    date1 = date.date()
+    # date1 = datetime.strptime(date, '%Y-%m-%d %H:%M:%S').date()
     weekday = date1.strftime('%A')
     hour = datetime.strptime(time, '%H:%M:%S').hour
-    return (date, weekday, hour)
+    return (str(date1), weekday, hour)
 
 
 
@@ -124,8 +125,8 @@ if uploaded_file is not None:
                     st.header("Aggregated results for tests arrival time")
 
                     number_of_tests =aggregated_date[test_name_col].sum()
-                    start_date = aggregated_date['Arrival_Date'].iloc[0]
-                    end_date = aggregated_date['Arrival_Date'].iloc[-1]
+                    start_date = str(aggregated_date['Arrival_Date'].iloc[0])
+                    end_date = str(aggregated_date['Arrival_Date'].iloc[-1])
 
                     st.subheader("There were total " + str(number_of_tests) + " tests arrived between " + start_date + ' and ' + end_date)
                     
