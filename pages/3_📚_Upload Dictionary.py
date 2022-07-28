@@ -71,7 +71,9 @@ if uploaded_dict is not None:
                     include = row['Include']
                     material = row['Material']
                     assay = row['Assay Name']
-                    newDict[test_name] = {'Include': include, 'Material': material, 'AssayName': assay}
+                    # Only update the translation with include == 1 to the base dictionary
+                    if include == 1:
+                        newDict[test_name] = {'Include': include, 'Material': material, 'AssayName': assay}
                 st.session_state.newDict = newDict
                 st.success('🎉 Dicitonary uploaded successfully')
 
