@@ -46,8 +46,9 @@ with st.expander('Click here to view the instructions'):
 4. Select the columns that you wish to include in the **5 columns worksheet**.
 5. Click the **Upload Raw Data** button to upload.
 6. Select the desired threshold for similarity score with the slide bar. The default score is 80.
-7. (Optional) If you have uploaded your own dictionary at **Update Dictionary** page, please check the box.
-8. After the result file is generated, the **Download Cuttent Result** button will show up. Click the button to download the result.
+7. Select the platform for chemisty and IA tests. The defaults are c50x and e60x.
+8. (Optional) If you have uploaded your own dictionary at **Update Dictionary** page, please check the box.
+9. After the result file is generated, the **Download Cuttent Result** button will show up. Click the button to download the result.
     """)
 
 ## Section 1: Upload the excel file that need translation
