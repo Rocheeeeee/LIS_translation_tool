@@ -139,7 +139,7 @@ st.session_state.threshold = threshold
 
 # User select platform
 st.markdown('---')
-st.header("Select the platform of where the tests were conduncted on")
+st.header("Select the platform of where the tests were conducted on")
 c_platform = st.radio("Select the platform for chemistry tests", ('c50x', 'c503', 'c70x'))
 e_platform = st.radio("Select the platform for IA tests", ('e60x', 'e80x'))
 
