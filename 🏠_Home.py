@@ -13,7 +13,7 @@ st.sidebar.info('Select the pages above')
 st.markdown("""
 # 🏠Guide for LIS Translation Tool
 An online tool for strategic workflow consultants to translate the raw LIS file from customers
-For step-by-step user guide with screenshot, please visit this (Google Doc)[https://docs.google.com/document/d/1tzNnKY6668rNBwBj4Wh-nZ-Sac1ZluSuB98Bcr2t6Os/edit?usp=sharing]
+
 
 ## Suggested Steps
 1. Fill in the missing timestamps and standardize the timestamps by the **Timestamps Formatting** page and download the formatted file.
@@ -44,6 +44,11 @@ The page for SWC to fill in the missing timestamps in the raw data and format th
 4. Select the timestamp columns which you want to format.
 5. Select the delimiter that the raw file is using to separate data and time in the columns
 6. Preview the formatted data below. If the result is correct, click **Download Current Result** to download the formatted file.
+
+#### Output
+- An Excel File: "Time Formatted_[date]_[uploaded file name].xlsx"
+    - Time Formatted sheet
+    - Raw Data
 ---
 """)
 
@@ -61,7 +66,14 @@ Translate the LIS test names in raw data based on calculating the string similar
 7. Select the platform for chemisty and IA tests. The defaults are c50x and e60x.
 8. (Optional) If you have uploaded your own dictionary at **Update Dictionary** page, please check the box.
 9. After the result file is generated, the **Download Cuttent Result** button will show up. Click the button to download the result.
----
+
+#### Output
+- An Excel file: "Translated_[date]_[uploaded file name].xlsx"
+    - Panel Definitions
+    - Graph Data Worksheet
+    - 5 Column Worksheet
+    - Raw data with matching results
+    - Formatted Raw Data
 ---
 """)
 
@@ -104,6 +116,9 @@ This page is for SWC to have a clear view about the aggregated result of custome
 4. Click **Generate Aggregated Report** button to view the result.
 5. For each visualization plot, click the three dot icon on the upper-right coner to download the plot.
 6. Click **Download Summary Report** to download the aggregated tables as an Excel file.
+
+#### Output
+- An Excel file: "Summary for_[uploaded file name].xlsx"
 """)
 
 st.markdown("""
