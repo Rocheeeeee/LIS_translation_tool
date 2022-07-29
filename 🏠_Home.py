@@ -13,7 +13,7 @@ st.sidebar.info('Select the pages above')
 st.markdown("""
 # 🏠Guide for LIS Translation Tool
 An online tool for strategic workflow consultants to translate the raw LIS file from customers
-
+For step-by-step user guide with screenshot, please visit this (Google Doc)[https://docs.google.com/document/d/1tzNnKY6668rNBwBj4Wh-nZ-Sac1ZluSuB98Bcr2t6Os/edit?usp=sharing]
 
 ## Suggested Steps
 1. Fill in the missing timestamps and standardize the timestamps by the **Timestamps Formatting** page and download the formatted file.
