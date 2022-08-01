@@ -146,7 +146,7 @@ e_platform = st.radio("Select the platform for IA tests", ('e60x', 'e80x'))
 # Load the base dictionary and the platform dictionary based on user selection
 baseDict = f.load_json('data/base_dict.json')
 
-# only load dicitonary for 503 and 70x when user selected
+# only load dictionary for 503 and 70x when user selected
 if c_platform == 'c503':
     c_dict = f.load_json('data/c503_dict.json')
 elif c_platform == 'c70x':
@@ -221,10 +221,10 @@ if st.button('Click here to start matching'):
                                         'ConfidenceScore': round(score*100,2)}
             # no tests in dictionary has a least the threshold similarity to test
             else:
-                match_result[test] = {'Include':0, 
+                match_result[test] = {'Include': 0, 
                                         'Material': ' ',
                                         'SimilarTest': 'No similar test found',
-                                        'AssayName': [],
+                                        'AssayName': [' '],
                                         'ConfidenceScore': 0}
             st.session_state.match_result = match_result
 
