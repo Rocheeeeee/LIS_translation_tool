@@ -76,11 +76,12 @@ if uploaded_dict is not None:
                     if assay == 'NA':
                         assay = 'NA '
 
-                    # split the assay into a list of tests
-                    assay = assay.split(',') # a list
+
 
                     # Only update the translation with include == 1 to the base dictionary
                     if include == 1:
+                                            # split the assay into a list of tests
+                        assay = assay.split(',') # a list
                         newDict[test_name] = {'Include': include, 'Material': material, 'Assay Name': assay}
 
                 st.session_state.newDict = newDict
