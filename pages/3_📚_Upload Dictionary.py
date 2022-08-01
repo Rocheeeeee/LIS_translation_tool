@@ -86,7 +86,6 @@ if uploaded_dict is not None:
 
                 st.session_state.newDict = newDict
                 st.success('🎉 Dicitonary uploaded successfully')
-                st.write(newDict)
 
         except KeyError:
             st.warning('🚨 Your dictionary does not follow the naming conventions. Column names should be **Test Name**, **Include**, **Material**, **Assay Name**.')
