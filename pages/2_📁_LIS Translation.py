@@ -222,7 +222,7 @@ if st.button('Click here to start matching'):
             # no tests in dictionary has a least the threshold similarity to test
             else:
                 match_result[test] = {'Include': 0, 
-                                        'Material': ' ',
+                                        'Material': 'SERUM',
                                         'SimilarTest': 'No similar test found',
                                         'AssayName': [' '],
                                         'ConfidenceScore': 0}
