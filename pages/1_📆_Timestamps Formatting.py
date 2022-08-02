@@ -190,7 +190,7 @@ if uploaded_file is not None:
             new_file_name = 'Time Formatted_' + today + st.session_state.file_name 
 
             # output the excel file and let the user download
-            sheet_list = ['Time Formatted Data', 'Raw Data']
+            sheet_list = ['Formatted Data', 'Raw Data']
             df_xlsx = f.dfs_to_excel([filled_data, raw_data], sheet_list)
             st.download_button(label='📥 Download Current Result 📥',
                                             data=df_xlsx,
