@@ -70,6 +70,7 @@ if uploaded_file is not None:
             presentation = st.selectbox('Are the date and time displayed in one or separate columns for the timestamps in your data?',
                         ('Please Select', 'One Column', 'Separate Columns'))
             filled_data = raw_data.copy()
+            filled_data = filled_data.dropna(subset=[ID_column])
             st.session_state.filled_data = filled_data
 
         # date and time are together in one column
