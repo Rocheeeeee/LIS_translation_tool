@@ -193,8 +193,6 @@ if uploaded_file is not None:
                                                     
                     st.success("🎉 File successfully generated. Please click on the download button to download.")
 
-                except AttributeError:
-                    st.error("ERROR: ")
                 except ValueError:
                     st.error('ERROR: Your timestamps are not standardized. Please visit the **Timestamps Formatting** page to standardize the file before using this function.')
 
