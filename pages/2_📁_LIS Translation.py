@@ -318,7 +318,7 @@ if st.button('Click here to start matching'):
          
         # output the excel file and let the user download
         sheet_name_list = ['Panel Definitions', 'Graph Data Worksheet', '5 Column Worksheet',
-                    'Formatted data with matching results', 'Formatted Data']
+                    'Data with translation', 'Formatted Data']
         df_list = [panel_df, graph_data, five_column_df, result_df, raw_data]
         df_xlsx = f.dfs_to_excel(df_list, sheet_name_list)
         st.download_button(label='📥 Download Current Result 📥',
