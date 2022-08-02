@@ -61,7 +61,7 @@ if uploaded_file is not None:
         if ID_column != '(Not Selected Yet)':
             st.session_state.ID_column = ID_column
             if raw_data[ID_column].isna().sum() > 0:
-                st.warning('WARNING: There are missing patient ID in this data.  Rows without patient ID will be dropped durning translation.')
+                st.warning('WARNING: There are missing patient ID in this data. Rows without patient ID will be dropped durning translation.')
             st.session_state.raw_data = raw_data
 
 
@@ -178,7 +178,7 @@ if uploaded_file is not None:
             - If a time is not supplied then 00:00:00 is used
             - The new columns for __TIME are displayed in milliseconds. It will be in the format of hh:mm:ss in excel file.
             """)
-            st.write("There are " + str(len(raw_data) - len(filled_data)) + " rows be dropped because of missing timestamps")
+            st.write("There are " + str(len(raw_data) - len(filled_data)) + " rows be dropped because of missing ID or Stimestamps")
             st.write(filled_data)
 
             st.caption('Please scroll to the right to see the newly created columns')
