@@ -70,7 +70,7 @@ if uploaded_file is not None:
     
     ## User select the sheet name that needs translation
     selected_sheet = st.selectbox('Select the sheet with LIS file:', all_sheets)
-    st.info("Recommend select the time formatted LIS file.")
+    st.info("Recommend to select **Formatted Data** sheet.")
 
     ## to read the selected sheet to dataframe and display the sheet:
     if selected_sheet != '(Not Selected Yet)':
@@ -102,7 +102,7 @@ if uploaded_file is not None:
         # Let user select the columns for 5 columns worksheet
         # Patient_ID	Priority	TimeStamp	TestName	Material
         column_options = st.multiselect(
-        'Select the columns for Priority, TimeStamp of completion for the 5 column worksheet', LIS_sheet.columns)
+        'Select the columns for Priority, timestamp of receipt of sample for the 5 column worksheet', LIS_sheet.columns)
         st.info('Note: assay and material will be updated in a future step.')
         if len(column_options) > 2:
             st.warning("You can only select 2 columns at most.")
@@ -139,7 +139,7 @@ st.session_state.threshold = threshold
 
 # User select platform
 st.markdown('---')
-st.header("Select the platform of where the tests were conducted on")
+st.header("Select the platform that the tests will be conducted on")
 c_platform = st.radio("Select the platform for chemistry tests", ('c50x', 'c503', 'c70x'))
 e_platform = st.radio("Select the platform for IA tests", ('e60x', 'e80x'))
 
@@ -219,9 +219,9 @@ if st.button('Click here to start matching'):
                                         'SimilarTest': best_match,
                                         'AssayName': assays,
                                         'ConfidenceScore': round(score*100,2)}
-            # no tests in dictionary has a least the threshold similarity to test
+            # no tests in dictionary has at least the threshold similarity to test
             else:
-                match_result[test] = {'Include': 0, 
+                match_result[test] = {'Include': 1, 
                                         'Material': 'SERUM',
                                         'SimilarTest': 'No similar test found',
                                         'AssayName': [' '],
@@ -318,7 +318,7 @@ if st.button('Click here to start matching'):
          
         # output the excel file and let the user download
         sheet_name_list = ['Panel Definitions', 'Graph Data Worksheet', '5 Column Worksheet',
-                    'Raw data with matching results', 'Formatted Raw Data']
+                    'Formatted data with matching results', 'Formatted Data']
         df_list = [panel_df, graph_data, five_column_df, result_df, raw_data]
         df_xlsx = f.dfs_to_excel(df_list, sheet_name_list)
         st.download_button(label='📥 Download Current Result 📥',
