@@ -70,7 +70,7 @@ if uploaded_file is not None:
     
     ## User select the sheet name that needs translation
     selected_sheet = st.selectbox('Select the sheet with LIS file:', all_sheets)
-    st.info("Recommend to select **Formatted Data** sheet.")
+    st.info("Recommend to select **Formatted Data** sheet. And the sheet name should not exceed 30 characters.")
 
     ## to read the selected sheet to dataframe and display the sheet:
     if selected_sheet != '(Not Selected Yet)':
