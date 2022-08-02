@@ -72,8 +72,8 @@ Translate the LIS test names in raw data based on calculating the string similar
     - Panel Definitions
     - Graph Data Worksheet
     - 5 Column Worksheet
-    - Raw data with matching results
-    - Formatted Raw Data
+    - Data with translation
+    - Formatted Data
 ---
 """)
 
