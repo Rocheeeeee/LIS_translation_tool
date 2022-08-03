@@ -120,7 +120,7 @@ if uploaded_file is not None:
                     chart1_assay = alt.Chart(sum_per_date_hour, title='Number of assays arrived in each hour each day').mark_rect().encode(
                         alt.X('Arrival_Hour:O', title='Hour of day'),
                         alt.Y('Arrival_Date:O', title='Date'),
-                        alt.Color('Number of assays', title='Number of assays', scale = alt.Scale(scheme='bluepurples')),
+                        alt.Color('Number of assays', title='Number of assays', scale = alt.Scale(scheme='orangered')),
                         tooltip = ['Arrival_Date', 'Arrival_Hour', 'Number of assays']
                     ).interactive()
 
