@@ -275,7 +275,7 @@ if st.button('Click here to start matching'):
         # Patient ID/Assay Name/LIS Test Name/Location-Ward/Priority/
         # Received Time/Verified Time/Lab/Data Origin
         graph_data = result_df.copy()
-        graph_data.drop(['Similar Test','Material', 'Confidence Score'], axis=1, inplace=True)
+        graph_data.drop(['Similar Test', 'Confidence Score'], axis=1, inplace=True)
         graph_data = graph_data.explode('Assay Name')
         graph_data.reset_index(drop = True, inplace = True)
 
