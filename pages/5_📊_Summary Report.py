@@ -116,30 +116,43 @@ if uploaded_file is not None:
                         tooltip = ['Arrival_Date', 'Arrival_Hour', 'Number of samples']
                     ).interactive()
 
+
                     chart1_assay = alt.Chart(sum_per_date_hour, title='Number of assays arrived in each hour each day').mark_rect().encode(
                         alt.X('Arrival_Hour:O', title='Hour of day'),
                         alt.Y('Arrival_Date:O', title='Date'),
-                        alt.Color('Number of assays', title='Number of assays'),
+                        alt.Color('Number of assays', title='Number of assays', scale = alt.Scale(scheme='bluepurples')),
                         tooltip = ['Arrival_Date', 'Arrival_Hour', 'Number of assays']
                     ).interactive()
 
 
-                    chart2 = alt.Chart(sum_per_date.melt('Arrival_Date'), title='Number of samples and assays arrived in each date'
+                    chart2 = alt.Chart(sum_per_date, title='Number of samples arrived in each date'
                     ).mark_bar().encode(
-                            alt.X('value:Q', title='Count'),
+                            alt.X('Number of samples:Q', title='Count'),
                             alt.Y("Arrival_Date:O", title='Date'),
-                            row = 'variable:N',
-                            tooltip = ['Arrival_Date', 'variable', 'value']
+                            tooltip = ['Arrival_Date', 'Number of samples']
+                    ).interactive()
+
+                    chart2_assay = alt.Chart(sum_per_date, title='Number of assays arrived in each date'
+                    ).mark_bar().encode(
+                            alt.X('Number of assays:Q', title='Count'),
+                            alt.Y("Arrival_Date:O", title='Date'),
+                            tooltip = ['Arrival_Date', 'Number of assays']
                     ).interactive()
 
 
 
-                    chart3 = alt.Chart(sum_per_week.melt('Arrival_Weekday'), title='Number of samples and assays arrived on each day'
+                    chart3 = alt.Chart(sum_per_week, title='Number of samples arrived on each day'
                     ).mark_bar().encode(
                             alt.Y('Arrival_Weekday:O', title='Day of Week', sort=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']),
-                            alt.X('value:Q', title='Count'),
-                            row = ('variable:N'),
-                            tooltip = ['Arrival_Weekday', 'variable', 'value']
+                            alt.X('Number of samples', title='Count'),
+                            tooltip = ['Arrival_Weekday', 'Number of samples']
+                    ).interactive()
+
+                    chart3_assay = alt.Chart(sum_per_week, title='Number of assays arrived on each day'
+                    ).mark_bar().encode(
+                            alt.Y('Arrival_Weekday:O', title='Day of Week', sort=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']),
+                            alt.X('Number of assays', title='Count'),
+                            tooltip = ['Arrival_Weekday', 'Number of assays']
                     ).interactive()
 
 
@@ -155,25 +168,27 @@ if uploaded_file is not None:
                     
                     tab1, tab2, tab3 = st.tabs(['Aggregated by arrival date and hour', 'Aggregated by arrival date', 'Aggregated by arrival day of week'])
                     with tab1:
-                        col11, col12 = st.columns(2)
+                        col11, col12, col13 = st.columns([1,3,3])
                         col11.dataframe(sum_per_date_hour, width=800)
                         col12.write(chart1)
-                        col12.write(chart1_assay)
-                        col12.caption('White square means there was no tests arrived in that hour.')
+                        col13.write(chart1_assay)
+                        col12.caption('White square means there were no tests arrived in that hour.')
 
                     with tab2:
-                        col21, col22 = st.columns(2)
+                        col21, col22, col23 = st.columns(3)
                         col21.dataframe(sum_per_date, width=800)
                         col22.write(chart2)
+                        col23.write(chart2_assay)
 
                     with tab3:
-                        col31, col32 = st.columns(2)
+                        col31, col32, col33 = st.columns(3)
                         sum_per_week['Arrival_Weekday'] = pd.Categorical(sum_per_week['Arrival_Weekday'], 
                                 categories=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday', 'Sunday'],
                                 ordered=True)
                         sum_per_week = sum_per_week.sort_values('Arrival_Weekday', ignore_index = True)
                         col31.dataframe(sum_per_week, width=800)
                         col32.write(chart3)
+                        col33.write(chart3_assay)
 
 
                     # Download summary report
@@ -193,6 +208,8 @@ if uploaded_file is not None:
                                                     
                     st.success("🎉 File successfully generated. Please click on the download button to download.")
 
+                except AttributeError:
+                    st.error("ERROR: ")
                 except ValueError:
                     st.error('ERROR: Your timestamps are not standardized. Please visit the **Timestamps Formatting** page to standardize the file before using this function.')
 
