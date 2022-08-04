@@ -72,8 +72,8 @@ Translate the LIS test names in raw data based on calculating the string similar
     - Panel Definitions
     - Graph Data Worksheet
     - 5 Column Worksheet
-    - Data with translation
-    - Formatted Data
+    - Raw data with matching results
+    - Formatted Raw Data
 ---
 """)
 
@@ -110,9 +110,9 @@ tab5.markdown("""
 ### Summary Report
 This page is for SWC to have a clear view about the aggregated result of customer LIS data.
 #### Instructions
-1. Select the raw data which timestamps are standardized by this application. **ONLY EXCEL files are accpeted**
-2. Select the sheet name which contains the formatted timestamp data.
-3. Select the column name for *Test Name*, *Test Arrival Date*, *Test Arrival Time* respectively.
+1. Select the raw data which timestamps are standardized and test names are translated by this application. **ONLY EXCEL files are accpeted**
+2. Select the sheet name which contains the **Graph Data Worksheet**.
+3. Follow the prompt and select corresponding columns respectively.
 4. Click **Generate Aggregated Report** button to view the result.
 5. For each visualization plot, click the three dot icon on the upper-right coner to download the plot.
 6. Click **Download Summary Report** to download the aggregated tables as an Excel file.
