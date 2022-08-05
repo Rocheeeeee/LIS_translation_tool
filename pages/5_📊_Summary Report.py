@@ -100,14 +100,14 @@ if uploaded_file is not None:
         if assay_col != '(Not Selected Yet)':
             st.subheader("Select the specific assays that you want to view their TAT")
             assays = raw_data[assay_col].unique()
-            selected_assay = st.multiselect("Assay Name", assays)
-            st.info('We suggest that do not select more than 6 assays at one time, or the display of histograms will be hard to read.')
+            selected_assay = st.multiselect("Assay Name", assays) #default=[]
+            st.info('We suggest that do not select more than 5 assays at one time, or the display of histograms will be hard to read.')
 
-        if st.button("📊 Generate Summary Report"):
+        if st.button("📊 Generate Summary Visualizations"):
             if '(Not Selected Yet)' in (ID_col, assay_col, priority_col, arrival_date_col, arrival_time_col):
                 st.warning('WARNING: You missed selecting one of the columns above')
             else:
-                try:
+                # try:
                     raw_data[ID_col] = raw_data[ID_col].astype(str) 
                     df = raw_data.copy()
                     df['Arrival_Date'], df['Arrival_Weekday'], df['Arrival_Hour'] = zip(*df.apply(lambda t: format_date(t[arrival_date_col], t[arrival_time_col]), axis=1))
@@ -231,6 +231,7 @@ if uploaded_file is not None:
                     st.subheader("There were total "  + number_of_samples + " samples and " + number_of_assays + " assays arrived between " + start_date + ' and ' + end_date)
                     st.write('Select the tabs below to view each section.')
                     tab1, tab2, tab3, tab4, tab5 = st.tabs(['Aggregated by arrival date and hour', 'Aggregated by arrival date', 'Aggregated by arrival day of week', 'TAT for all tests', 'TAT for selected assays'])
+                    st.markdown('---')
                     with tab1:
                         col11, col12, col13 = st.columns([1,3,3])
                         col11.dataframe(sum_per_date_hour, width=800)
@@ -266,7 +267,8 @@ if uploaded_file is not None:
 
                     with tab5:
                         assay_tat_df = assay_tat_df[assay_tat_df[assay_col].isin(selected_assay)]
-                        assay_TAT_hist = alt.Chart(assay_tat_df, title='Distribution of assay TAT by test priority').mark_bar().encode(
+                        assay_TAT_hist = alt.Chart(assay_tat_df, title='Distribution of assay TAT by test priority'
+                        ).mark_bar().encode(
                             alt.X('TAT_minutes', bin=alt.Bin(maxbins=30), title='Turn around time (minutes)'),
                             alt.Y('count()', title='Distinct count of assays'),
                             color = alt.Color(priority_col,scale = alt.Scale(scheme='tableau20')),
@@ -276,13 +278,32 @@ if uploaded_file is not None:
                             datum.TAT_minutes <= threshold_selector.Threshold
                         ).add_selection(
                             threshold_selector
-                        ).properties(
-                          width = 'container'  
+                        ).properties(width='container', height=500
+                        ).interactive()
+
+                        assay_TAT_line = alt.Chart(assay_tat_df, title = 'Cumulative percentage(%)'
+                        ).transform_window(
+                            cumulative_count = 'count()',
+                            sort = [{'field': 'TAT_minutes'}]
+                        ).transform_joinaggregate(
+                            total_count = 'count()'
+                        ).transform_calculate(
+                            cumulative_percentage = "datum.cumulative_count / datum.total_count * 100"
+                        ).mark_line(color='#E74C3C').encode(
+                            alt.X('TAT_minutes'),
+                            alt.Y('cumulative_percentage:Q', title = 'Cumulative percentage(%)'),
+                            column = assay_col,
+                            tooltip = ['TAT_minutes']
+                        ).transform_filter(
+                            datum.TAT_minutes <= threshold_selector.Threshold
+                        ).add_selection(
+                            threshold_selector
+                        ).properties(width='container', height=500
                         ).interactive()
                         st.write(assay_TAT_hist)
-
-
-
+                        st.write(assay_TAT_line)
+                
+                    # if st.button("Start generating Excel output"):
                     # Download summary report
                     st.warning("The result file is still generating, please wait until the download button show up...")
                     # Formatting the new file name
@@ -301,7 +322,6 @@ if uploaded_file is not None:
                     st.success("🎉 File successfully generated. Please click on the download button to download.")
 
 
-
-                except ValueError:
-                    st.error('ERROR: Your timestamps are not standardized. Please visit the **Timestamps Formatting** page to standardize the file before using this function.')
+                # except ValueError:
+                #     st.error('ERROR: Your timestamps are not standardized. Please visit the **Timestamps Formatting** page to standardize the file before using this function.')
 
