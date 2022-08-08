@@ -14,6 +14,7 @@ st.markdown("""
 # 🏠Guide for LIS Translation Tool
 An online tool for strategic workflow consultants to translate the raw LIS file from customers
 
+Suggest using Microsoft Edge to access this application
 
 ## Suggested Steps
 1. Fill in the missing timestamps and standardize the timestamps by the **Timestamps Formatting** page and download the formatted file.
