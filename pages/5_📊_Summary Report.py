@@ -81,11 +81,6 @@ if uploaded_file is not None:
         st.subheader('Select the column for test priority')
         priority_col = st.selectbox("Priority", all_columns)
 
-#         if priority_col != '(Not Selected Yet)':
-#             all_priority = ['(Not Selected Yet)'] + list(raw_data[priority_col].unique())
-#             st.subheader("Select the specific priority level you want to view the TAT")
-#             selected_priority = st.selectbox('Priority Level', all_priority)
-
         st.subheader("This column is the assay names translated by the **LIS Translation**")
         assay_col = st.selectbox('Select the column for translated assay names', all_columns)
 
@@ -112,11 +107,6 @@ if uploaded_file is not None:
             selected_assay = st.multiselect("The default assays are BUN and TAT-STAT", assays, default = defaults) 
             st.info('We suggest that do not select more than 5 assays at one time, or the display of histograms will be hard to read.')
 
-# create a bar chart for a selected date. And generate a 5 column for only that date as well as a 5 column that covered all of the data
-        # if arrival_date_col != '(Not Selected Yet)':
-        #     start_date = min(raw_data[arrival_date_col])
-        #     end_date = max(raw_data[arrival_date_col])
-        #     st.date_input('Select the specific date that you want to view the TAT', value = start_date, min_value=start_date, max_value=end_date)
 
         if st.button("📊 Generate Summary Reports"):
             if '(Not Selected Yet)' in (ID_col, assay_col, priority_col, arrival_date_col, arrival_time_col):
@@ -203,14 +193,14 @@ if uploaded_file is not None:
                     slider = alt.binding_range(min = 10, max = 600, step=10, name='Threshold:')
                     threshold_selector = alt.selection_single(name='threshold_selector', fields=['Threshold'], bind=slider, init = {'Threshold':120})
                     
-                    TAT_hist = alt.Chart(tat_df, title='Distribution of test TAT by test priority').mark_bar().encode(
+                    TAT_hist = alt.Chart(tat_df[tat_df['TAT_minutes']>=0], title='Distribution of test TAT by test priority').mark_bar().encode(
                         alt.X('TAT_minutes', bin=alt.Bin(maxbins=30), title='Turn around time (minutes)'),
                         alt.Y('count()', title='Distinct count '),
                         color = alt.Color(priority_col,scale = alt.Scale(scheme='tableau20')),
                         tooltip = [priority_col, 'count()']
                     ) 
                 # cumulative percentage of test TAT
-                    TAT_line = alt.Chart(tat_df).transform_window(
+                    TAT_line = alt.Chart(tat_df[tat_df['TAT_minutes']>=0]).transform_window(
                         cumulative_count = 'count()',
                         sort = [{'field': 'TAT_minutes'}]
                     ).transform_joinaggregate(
@@ -230,37 +220,6 @@ if uploaded_file is not None:
                             threshold_selector
                         ).properties(width=700, height=500
                         ).interactive()
-
-                # # Histogram for specific priority
-                #     slider1 = alt.binding_range(min = 10, max = 600, step=10, name='Threshold for TAT:')
-                #     threshold_selector_pri = alt.selection_single(name='threshold_selector_pri', fields=['Threshold_priority'], bind=slider1, init = {'Threshold_priority':120})
-                    
-                #     TAT_hist_pri = alt.Chart(tat_df[tat_df[priority_col]==selected_priority], title='Distribution of TAT for '+selected_priority).mark_bar().encode(
-                #         alt.X('TAT_minutes', bin=alt.Bin(maxbins=30), title='Turn around time (minutes)'),
-                #         alt.Y('count()', title='Distinct count '),
-                #         tooltip = [priority_col, 'count()']
-                #     ) 
-                # # cumulative percentage of test TAT for specific priority
-                #     TAT_line_pri = alt.Chart(tat_df[tat_df[priority_col]==selected_priority]).transform_window(
-                #         cumulative_count = 'count()',
-                #         sort = [{'field': 'TAT_minutes'}]
-                #     ).transform_joinaggregate(
-                #         total_count = 'count()'
-                #     ).transform_calculate(
-                #         cumulative_percentage = "datum.cumulative_count / datum.total_count * 100"
-                #     ).mark_line(color='#E74C3C').encode(
-                #         alt.X('TAT_minutes'),
-                #         alt.Y('cumulative_percentage:Q', title = 'Cumulative percentage(%)')
-                #     )
-                # # Layered the two charts for specific priority
-                #     TAT_layered_pri = alt.layer(TAT_hist_pri, TAT_line_pri).resolve_scale(
-                #             y = 'independent'
-                #         ).transform_filter(
-                #             datum.TAT_minutes <= threshold_selector_pri.threshold_selector_pri
-                #         ).add_selection(
-                #             threshold_selector_pri
-                #         ).properties(width=700, height=500
-                #         ).interactive()
 
 
                 # Present the summary report
