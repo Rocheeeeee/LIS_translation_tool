@@ -79,6 +79,8 @@ if uploaded_dict is not None:
                     if include == 1:
                     # split the assay into a list of tests
                         assay = assay.split(',') # a list
+                    else:
+                      pass
                       
                     newDict[test_name] = {'Include': include, 'Material': material, 'Assay Name': assay}
 
