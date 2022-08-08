@@ -81,10 +81,10 @@ if uploaded_file is not None:
         st.subheader('Select the column for test priority')
         priority_col = st.selectbox("Priority", all_columns)
 
-        if priority_col != '(Not Selected Yet)':
-            all_priority = ['(Not Selected Yet)'] + list(raw_data[priority_col].unique())
-            st.subheader("Select the specific priority level you want to view the TAT")
-            selected_priority = st.selectbox('Priority Level', all_priority)
+#         if priority_col != '(Not Selected Yet)':
+#             all_priority = ['(Not Selected Yet)'] + list(raw_data[priority_col].unique())
+#             st.subheader("Select the specific priority level you want to view the TAT")
+#             selected_priority = st.selectbox('Priority Level', all_priority)
 
         st.subheader("This column is the assay names translated by the **LIS Translation**")
         assay_col = st.selectbox('Select the column for translated assay names', all_columns)
