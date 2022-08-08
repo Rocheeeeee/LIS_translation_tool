@@ -147,6 +147,7 @@ if uploaded_file is not None:
                     ).mark_bar().encode(
                             alt.X('Number of samples:Q', title='Count'),
                             alt.Y("Arrival_Date:O", title='Date'),
+                            color = alt.Color(value='#0B41CD'),
                             tooltip = ['Arrival_Date', 'Number of samples']
                     ).interactive()
                     # bar chart for number of assays arrived at each day
@@ -154,6 +155,7 @@ if uploaded_file is not None:
                     ).mark_bar().encode(
                             alt.X('Number of assays:Q', title='Count'),
                             alt.Y("Arrival_Date:O", title='Date'),
+                            color = alt.Color(value='#1482FA'),
                             tooltip = ['Arrival_Date', 'Number of assays']
                     ).interactive()
                     # bar chart for number of samples arrvied at each day of week
@@ -161,6 +163,7 @@ if uploaded_file is not None:
                     ).mark_bar().encode(
                             alt.Y('Arrival_Weekday:O', title='Day of Week', sort=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']),
                             alt.X('Number of samples', title='Count'),
+                            color = alt.Color(value='#0B41CD'),
                             tooltip = ['Arrival_Weekday', 'Number of samples']
                     ).interactive()
                     # bar chart for number of assays arrived at each day of week
@@ -168,6 +171,7 @@ if uploaded_file is not None:
                     ).mark_bar().encode(
                             alt.Y('Arrival_Weekday:O', title='Day of Week', sort=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']),
                             alt.X('Number of assays', title='Count'),
+                            color = alt.Color(value='#1482FA'),
                             tooltip = ['Arrival_Weekday', 'Number of assays']
                     ).interactive()
 
