@@ -100,8 +100,13 @@ if uploaded_file is not None:
         if assay_col != '(Not Selected Yet)':
             st.subheader("Select the specific assays that you want to view their TAT")
             assays = raw_data[assay_col].unique()
-            selected_assay = st.multiselect("Assay Name", assays) #default=[]
+            # tests the SWC mostly want to look into: BUN and TNT-STAT
+            mostly_want_assays = ['BUN', 'BUN5P', 'BUN7', 'TNT-STAT', 'TNT-STAT8']
+            # check if the data contains any 
+            defaults = [value for value in mostly_want_assays if value in assays]
+            selected_assay = st.multiselect("The default assays are BUN and TAT-STAT", assays, default = defaults) 
             st.info('We suggest that do not select more than 5 assays at one time, or the display of histograms will be hard to read.')
+
 
         if st.button("📊 Generate Summary Visualizations"):
             if '(Not Selected Yet)' in (ID_col, assay_col, priority_col, arrival_date_col, arrival_time_col):
