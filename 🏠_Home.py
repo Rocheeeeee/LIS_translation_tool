@@ -22,7 +22,7 @@ An online tool for strategic workflow consultants to translate the raw LIS file 
 4. If there are tests that you don't want to include in the result file, please change the *Include* column to 0.
 5. Visit the **Update Dictionary** page to upload your revised dictionary.
 6. Go to **LIS Tranlation** page and redo the translation.
-7. If you want to see the summary of the LIS file, visit **Summary Report** page after finish step 1.
+7. If you want to see the summary of the LIS file, visit **Summary Report** page after finish timestamp formatting and translation.
 
 ## Detailed guide for each page
 Select the tabs below to see the detailed instructions for each page.
