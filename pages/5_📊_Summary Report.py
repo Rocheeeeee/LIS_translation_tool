@@ -193,14 +193,14 @@ if uploaded_file is not None:
                     slider = alt.binding_range(min = 10, max = 600, step=10, name='Threshold:')
                     threshold_selector = alt.selection_single(name='threshold_selector', fields=['Threshold'], bind=slider, init = {'Threshold':120})
                     
-                    TAT_hist = alt.Chart(tat_df[tat_df['TAT_minutes']>=0], title='Distribution of test TAT by test priority').mark_bar().encode(
+                    TAT_hist = alt.Chart(tat_df, title='Distribution of test TAT by test priority').mark_bar().encode(
                         alt.X('TAT_minutes', bin=alt.Bin(maxbins=30), title='Turn around time (minutes)'),
                         alt.Y('count()', title='Distinct count '),
                         color = alt.Color(priority_col,scale = alt.Scale(scheme='tableau20')),
                         tooltip = [priority_col, 'count()']
                     ) 
                 # cumulative percentage of test TAT
-                    TAT_line = alt.Chart(tat_df[tat_df['TAT_minutes']>=0]).transform_window(
+                    TAT_line = alt.Chart(tat_df).transform_window(
                         cumulative_count = 'count()',
                         sort = [{'field': 'TAT_minutes'}]
                     ).transform_joinaggregate(
