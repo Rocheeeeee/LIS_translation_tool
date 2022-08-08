@@ -76,12 +76,14 @@ if uploaded_dict is not None:
                     if assay == 'NA':
                         assay = 'NA '
 
-                    if include == 1:
-                    # split the assay into a list of tests
-                        assay = assay.split(',') # a list
-                    else:
-                      pass
-                      
+                    # for the test without assay, fill na with a space
+                    if assay is None:
+                        assay = [' ']
+
+                    # if include == 1:
+                        # split the assay into a list of tests
+                    assay = assay.split(',') # a list
+
                     newDict[test_name] = {'Include': include, 'Material': material, 'Assay Name': assay}
 
                 st.session_state.newDict = newDict
