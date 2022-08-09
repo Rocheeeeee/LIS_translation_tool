@@ -32,7 +32,7 @@ with st.expander('Click here to view the instructions'):
 ## Section: Upload the excel file
 st.header('Upload Raw Data')
 uploaded_file = st.file_uploader("Select the file which needs translation:", type=['xlsx'])
-st.info('Please only upload excel file.')
+st.info('Please only upload **EXCEL** file(.xlsx)')
 
 
 
@@ -43,7 +43,8 @@ if uploaded_file is not None:
     all_sheets = ['(Not Selected Yet)'] + LIS_file.sheet_names
     
     ## User select the sheet name that needs translation
-    selected_sheet = st.selectbox('Select the sheet with raw data:', all_sheets)
+    st.subheader('Select the sheet contains the raw data in the drop down menu')
+    selected_sheet = st.selectbox('Sheet names', all_sheets)
 
     ## to read just one sheet to dataframe and display the sheet:
     if selected_sheet != '(Not Selected Yet)':
@@ -56,7 +57,8 @@ if uploaded_file is not None:
             st.caption("<NA> means there is no value in the cell")
 
         all_columns = ['(Not Selected Yet)'] + list(raw_data.columns)
-        ID_column = st.selectbox("Select the column for patient ID", all_columns)
+        st.subheader('Select the column for patient ID')
+        ID_column = st.selectbox("patient ID", all_columns)
 
         if ID_column != '(Not Selected Yet)':
             st.session_state.ID_column = ID_column
@@ -67,7 +69,8 @@ if uploaded_file is not None:
 
             st.markdown('---')
             # select the presentation of timestamps: date and time are in the same or separate columns
-            presentation = st.selectbox('Are the date and time displayed in one or separate columns for the timestamps in your data?',
+            st.subheader('Are the date and time displayed in one or separate columns for the timestamps in your data?')
+            presentation = st.selectbox('How are the timestamps displayed?',
                         ('Please Select', 'One Column', 'Separate Columns'))
             filled_data = raw_data.copy()
             filled_data = filled_data.dropna(subset=[ID_column])
@@ -76,8 +79,8 @@ if uploaded_file is not None:
         # date and time are together in one column
             if presentation == 'One Column':
                 # select the timestamp columns
-                datetime_columns = st.multiselect("Please select the columns of timestamps that need formatting.\
-                                            Multiple selections are allowed", raw_data.columns)
+                st.subheader('Please select the columns of timestamps that need formatting.')
+                datetime_columns = st.multiselect("Multiple selections are allowed.", raw_data.columns)
                 st.info('A row will be dropped if there are any missing timestamps in the columns you selected')
                 st.session_state.datetime_columns = datetime_columns
                 
@@ -93,8 +96,8 @@ if uploaded_file is not None:
                     st.session_state.filled_data = filled_data
 
                     # select delimiter between date and time
-                    delimiter = st.selectbox('Select the delimiter that separates date and time in timestamp columns',
-                                    ('Please Select', 'Space', '@', '_', ';'))
+                    st.subheader('Select the delimiter that separates date and time in timestamp columns')
+                    delimiter = st.selectbox('',('Please Select', 'Space', '@', '_', ';'))
                     if delimiter == 'Space':
                         delimiter = ' '
                     st.info('Please make sure all the timestamp columns you selected are using the same delimiter.')
@@ -122,7 +125,6 @@ if uploaded_file is not None:
                                 # separate the timestamp into Date and Time columns
                                 date_col = col + '__Date'
                                 time_col = col + '__Time'
-                                # filled_data[date_col] = filled_data[col].apply(lambda dt: dt.strftime('%m%d%Y'))
                                 filled_data[date_col] = filled_data[col].apply(lambda dt: dt.date())
                                 filled_data[time_col] = filled_data[col].apply(lambda dt: dt.time())
 
@@ -132,11 +134,11 @@ if uploaded_file is not None:
 
             elif presentation == 'Separate Columns':
                 # Select the date columns
-                date_columns = st.multiselect('Please select the columns of test dates.  \
-                    Multiple selections are allowed', raw_data.columns)
+                st.subheader('Please select the columns of test dates.')
+                date_columns = st.multiselect('Multiple selections are allowed.', raw_data.columns)
                 st.session_state.date_columns = date_columns
-                time_columns = st.multiselect('Please select the columns of test times.  \
-                    Multiple selections are allowed', raw_data.columns)
+                st.subheader('Please select the columns of test times.')
+                time_columns = st.multiselect('Multiple selections are allowed. ', raw_data.columns)
                 st.session_state.time_columns = time_columns
 
                 if (len(date_columns) > 0) and (len(time_columns) > 0):
@@ -171,7 +173,7 @@ if uploaded_file is not None:
 
 
             st.markdown('---')
-            st.markdown('#### Preview the formatted data')
+            st.markdown('### Preview the formatted data')
             st.markdown("""
             - **The program would use the current datetime to make up for any missing parts of the timestamp**
             - For example, in the parsing of '12/20' , which got parsed as 2022-12-20 as 2022 is the current year
