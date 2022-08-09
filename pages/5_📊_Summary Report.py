@@ -81,6 +81,11 @@ if uploaded_file is not None:
         st.subheader('Select the column for test priority')
         priority_col = st.selectbox("Priority", all_columns)
 
+        if priority_col != '(Not Selected Yet)':
+            all_priority = ['(Not Selected Yet)'] + list(raw_data[priority_col].unique())
+            st.subheader("Select the specific priority level you want to view the TAT")
+            selected_priority = st.selectbox('Priority Level', all_priority)
+
         st.subheader("This column is the assay names translated by the **LIS Translation**")
         assay_col = st.selectbox('Select the column for translated assay names', all_columns)
 
@@ -107,6 +112,11 @@ if uploaded_file is not None:
             selected_assay = st.multiselect("The default assays are BUN and TAT-STAT", assays, default = defaults) 
             st.info('We suggest that do not select more than 5 assays at one time, or the display of histograms will be hard to read.')
 
+# create a bar chart for a selected date. And generate a 5 column for only that date as well as a 5 column that covered all of the data
+        # if arrival_date_col != '(Not Selected Yet)':
+        #     start_date = min(raw_data[arrival_date_col])
+        #     end_date = max(raw_data[arrival_date_col])
+        #     st.date_input('Select the specific date that you want to view the TAT', value = start_date, min_value=start_date, max_value=end_date)
 
         if st.button("📊 Generate Summary Reports"):
             if '(Not Selected Yet)' in (ID_col, assay_col, priority_col, arrival_date_col, arrival_time_col):
@@ -117,7 +127,7 @@ if uploaded_file is not None:
                     df = raw_data.copy()
                     df['Arrival_Date'], df['Arrival_Weekday'], df['Arrival_Hour'] = zip(*df.apply(lambda t: format_date(t[arrival_date_col], t[arrival_time_col]), axis=1))
 
-                    # count the number of unique IDs per day/hour
+                    # count the number of unique IDs and assays per day/hour
                     sum_per_date_hour = df.groupby(['Arrival_Date', 'Arrival_Hour']).agg({ID_col: 'nunique', assay_col: 'count'}).reset_index()
                     sum_per_date = df.groupby(['Arrival_Date']).agg({ID_col: 'nunique', assay_col: 'count'}).reset_index()
                     sum_per_week = df.groupby(['Arrival_Weekday']).agg({ID_col: 'nunique', assay_col: 'count'}).reset_index()
@@ -126,7 +136,11 @@ if uploaded_file is not None:
                     sum_per_date.rename(columns={ID_col: 'Number of samples', assay_col:'Number of assays'}, inplace = True)
                     sum_per_week.rename(columns={ID_col: 'Number of samples', assay_col:'Number of assays'}, inplace = True)
 
-                    
+                # get the peak day
+                    sample_peak_date = sum_per_date.iloc[sum_per_date['Number of samples'].idxmax()]['Arrival_Date']
+                    assay_peak_date = sum_per_date.iloc[sum_per_date['Number of assays'].idxmax()]['Arrival_Date']
+
+
                 # Visualizations for test receipt time
                     # Heat map for number of samples arrived at each time
                     chart1 = alt.Chart(sum_per_date_hour, title='Number of samples arrived in each hour each day').mark_rect().encode(
@@ -175,6 +189,23 @@ if uploaded_file is not None:
                             tooltip = ['Arrival_Weekday', 'Number of assays']
                     ).interactive()
 
+                # Line chart for Peak date
+                    peak_sample_line = alt.Chart(sum_per_date_hour[sum_per_date_hour['Arrival_Date']==sample_peak_date], title='Number of samples arrived in each hour on the peak day'
+                    ).mark_line().encode(
+                        alt.X('Arrival_Hour:O', title='Hour'),
+                        alt.Y('Number of samples', title='Count'),
+                        color = alt.Color(value='#0B41CD'),
+                        tooltip = ['Arrival_Hour', 'Number of samples']
+                    ).interactive()
+
+                    peak_assay_line = alt.Chart(sum_per_date_hour[sum_per_date_hour['Arrival_Date']==assay_peak_date], title='Number of assays arrived in each hour on the peak day'
+                    ).mark_line().encode(
+                        alt.X('Arrival_Hour:O', title='Hour'),
+                        alt.Y('Number of assays', title='Count'),
+                        color = alt.Color(value='#1482FA'),
+                        tooltip = ['Arrival_Hour', 'Number of assays']
+                    ).interactive()
+
 
                 # Calculate test turn around time
                     tat_df = raw_data.copy()
@@ -193,10 +224,10 @@ if uploaded_file is not None:
                     tat_df.drop([assay_col], axis = 1, inplace = True)
                     tat_df.drop_duplicates(inplace=True)
 
-                # histogram of test TAT
+                # slide bar for user to select threshold TAT
                     slider = alt.binding_range(min = 10, max = 600, step=10, name='Threshold:')
                     threshold_selector = alt.selection_single(name='threshold_selector', fields=['Threshold'], bind=slider, init = {'Threshold':120})
-                    
+                # histogram of test TAT
                     TAT_hist = alt.Chart(tat_df, title='Distribution of test TAT by test priority').mark_bar().encode(
                         alt.X('TAT_minutes', bin=alt.Bin(maxbins=30), title='Turn around time (minutes)'),
                         alt.Y('count()', title='Distinct count '),
@@ -226,6 +257,40 @@ if uploaded_file is not None:
                         ).interactive()
 
 
+
+                # Histogram for specific priority 
+                    # filter the dataframe by the user selected priority
+                    tat_df_pri = tat_df[tat_df[priority_col]==selected_priority]
+                    #histogram of TAT for selected priority
+                    TAT_hist_pri = alt.Chart(tat_df_pri, title='Distribution of TAT for '+selected_priority).mark_bar().encode(
+                        alt.X('TAT_minutes', bin=alt.Bin(maxbins=30), title='Turn around time (minutes)'),
+                        alt.Y('count()', title='Distinct count'),
+                        color = alt.Color(value='#0B41CD'),
+                        tooltip = [priority_col, 'count()']
+                    ) 
+                # cumulative percentage of test TAT for specific priority
+                    TAT_line_pri = alt.Chart(tat_df_pri).transform_window(
+                        cumulative_count = 'count()',
+                        sort = [{'field': 'TAT_minutes'}]
+                    ).transform_joinaggregate(
+                        total_count = 'count()'
+                    ).transform_calculate(
+                        cumulative_percentage = "datum.cumulative_count / datum.total_count * 100"
+                    ).mark_line(color='#E74C3C').encode(
+                        alt.X('TAT_minutes'),
+                        alt.Y('cumulative_percentage:Q', title = 'Cumulative percentage(%)')
+                    )
+                # Layered the two charts for specific priority
+                    TAT_layered_pri = alt.layer(TAT_hist_pri, TAT_line_pri).resolve_scale(
+                            y = 'independent'
+                        ).transform_filter(
+                            datum.TAT_minutes <= threshold_selector.Threshold
+                        ).add_selection(
+                            threshold_selector
+                        ).properties(width=700, height=500
+                        ).interactive()
+
+
                 # Present the summary report
                     st.header("Summary report")
 
@@ -242,8 +307,14 @@ if uploaded_file is not None:
                         col11, col12, col13 = st.columns([1,3,3])
                         col11.dataframe(sum_per_date_hour, width=800)
                         col12.write(chart1)
+                        col12.write("The date with most number of sample arrived is " + str(sample_peak_date))
+                        col12.write(peak_sample_line)
+
                         col13.write(chart1_assay)
+                        col13.write('The date with most number of assays arrived is ' + str(assay_peak_date))
+                        col13.write(peak_assay_line)
                         col12.caption('White square means there were no tests arrived in that hour.')
+                        
 
                     with tab2:
                         col21, col22, col23 = st.columns(3)
@@ -261,11 +332,11 @@ if uploaded_file is not None:
                         col32.write(chart3)
                         col33.write(chart3_assay)
 
-
+                    # TAT of all priorities and all tests, and user selected priority
                     with tab4:
                         col41, col42 = st.columns(2)
                         col41.write(TAT_layered)
-                        # col42.write(TAT_layered_pri)
+                        col42.write(TAT_layered_pri)
 
                         col1, col2, col3, col4 = st.columns(4)
                         col1.metric("Mean TAT", str(round(tat_df['TAT_minutes'].mean(),2)) +" min")
@@ -274,6 +345,7 @@ if uploaded_file is not None:
                         col4.metric("Max TAT", str(tat_df['TAT_minutes'].max())+" min")
 
 
+                    # TAT of user selected assays
                     with tab5:
                         assay_tat_df = assay_tat_df[assay_tat_df[assay_col].isin(selected_assay)]
                         assay_TAT_hist = alt.Chart(assay_tat_df, title='Distribution of assay TAT by test priority'
@@ -299,7 +371,7 @@ if uploaded_file is not None:
                         ).transform_calculate(
                             cumulative_percentage = "datum.cumulative_count / datum.total_count * 100"
                         ).mark_line(color='#E74C3C').encode(
-                            alt.X('TAT_minutes'),
+                            alt.X('TAT_minutes', title = 'Turn around time in minutes'),
                             alt.Y('cumulative_percentage:Q', title = 'Cumulative percentage(%)'),
                             column = assay_col,
                             tooltip = ['TAT_minutes']
@@ -318,7 +390,7 @@ if uploaded_file is not None:
                     new_file_name = 'Summary for_' + st.session_state.file_name
                     dict_of_df = st.session_state.dict_of_df
                     # output the excel file and let the user download
-                    # tat_df = tat_df.drop(["Arrival Datetime", "Complete Datetime"], axis = 1)
+                    tat_df = tat_df.drop(["Arrival Datetime", "Complete Datetime"], axis = 1)
                     sheet_name_list = ['Aggregated by date and time', 'Aggregated by date', 'Aggregated by day of week',
                                 'Turn around time'] + list(dict_of_df.keys())
                     df_list = [sum_per_date_hour, sum_per_date, sum_per_week, tat_df] + list(dict_of_df.values())
