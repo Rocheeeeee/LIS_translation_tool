@@ -200,10 +200,10 @@ if st.button('Click here to start matching'):
         panelDict = st.session_state.panelDict
         threshold = st.session_state.threshold
         for test in tests:
-            matches = difflib.get_close_matches(str(test), panelDict.keys(), n=1, cutoff = threshold/100)
+            matches = difflib.get_close_matches(str(test).upper(), panelDict.keys(), n=1, cutoff = threshold/100)
             if len(matches) > 0: # if a match is found
                 best_match = matches[0]
-                score = difflib.SequenceMatcher(None, test, best_match).ratio()
+                score = difflib.SequenceMatcher(None, test.upper(), best_match).ratio()
                 include = panelDict[best_match]['Include']
                 material = panelDict[best_match]['Material']
                 assays= panelDict[best_match]['Assay Name'] # a list of assays without adding the ending
