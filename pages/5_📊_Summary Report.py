@@ -331,5 +331,5 @@ if uploaded_file is not None:
 
 
                 except ValueError:
-                    st.error('ERROR: Your timestamps are not standardized. Please visit the **Timestamps Formatting** page to standardize the file before using this function.')
+                    st.error('ERROR: Your timestamps do not match the designated format. Please visit the **Timestamps Formatting** page to standardize the file before using this function.')
 
