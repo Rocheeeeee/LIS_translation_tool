@@ -43,13 +43,15 @@ st.markdown("""
 """)
 
 st.markdown('---')
-uploaded_dict = st.file_uploader("Select the excel file. Please make sure the file follows the format above.", type=['xlsx'])
+st.subheader('Select the excel file with your panel definitions.')
+uploaded_dict = st.file_uploader("Please make sure the file follows the format above.", type=['xlsx'])
 if uploaded_dict is not None:
     own_dict = pd.ExcelFile(uploaded_dict)
     all_dict_sheets = ['(Not Selected Yet)'] + own_dict.sheet_names
 
     ## User select the sheet name that needs translation
-    selected_dict_sheet = st.selectbox('Select the sheet name:', all_dict_sheets, key='dictionary_selection')
+    st.subheader('Select the sheet with your panel definitions')
+    selected_dict_sheet = st.selectbox('Sheet name:', all_dict_sheets, key='dictionary_selection')
 
     ## to read just one sheet to dataframe and display the sheet:
     if selected_dict_sheet != '(Not Selected Yet)':
