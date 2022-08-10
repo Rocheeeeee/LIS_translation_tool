@@ -89,7 +89,7 @@ if uploaded_file is not None:
                     datetime_columns = st.session_state.datetime_columns
                     ID_column = st.session_state.ID_column
                     filled_data = st.session_state.filled_data
-                    filled_data[datetime_columns] = filled_data.groupby(ID_column)[datetime_columns].ffill().bfill()
+                    filled_data[datetime_columns] = filled_data.groupby(ID_column)[datetime_columns].ffill()
 
                     # drop the rows which there are missing dates
                     filled_data.dropna(subset = datetime_columns, how='any', inplace = True)
@@ -148,8 +148,8 @@ if uploaded_file is not None:
                     ID_column = st.session_state.ID_column
                     filled_data = st.session_state.filled_data
                     
-                    filled_data[date_columns] = filled_data.groupby(ID_column)[date_columns].ffill().bfill()
-                    filled_data[time_columns] = filled_data.groupby(ID_column)[time_columns].ffill().bfill()
+                    filled_data[date_columns] = filled_data.groupby(ID_column)[date_columns].ffill()
+                    filled_data[time_columns] = filled_data.groupby(ID_column)[time_columns].ffill()
 
                     # drop the rows which there are missing dates
                     filled_data.dropna(subset=time_columns, how='any', inplace = True)
