@@ -81,7 +81,7 @@ if uploaded_file is not None:
                 # select the timestamp columns
                 st.subheader('Please select the columns of timestamps that need formatting.')
                 datetime_columns = st.multiselect("Multiple selections are allowed.", raw_data.columns)
-                st.info('A row will be dropped if there are any missing timestamps in the columns you selected')
+                st.info('If an ID does not have any timestamp for all the tests it has, the data for this ID will be dropped.')
                 st.session_state.datetime_columns = datetime_columns
                 
                 if len(datetime_columns) > 0:
@@ -140,6 +140,7 @@ if uploaded_file is not None:
                 st.subheader('Please select the columns of test times.')
                 time_columns = st.multiselect('Multiple selections are allowed. ', raw_data.columns)
                 st.session_state.time_columns = time_columns
+                st.info('If an ID does not have any timestamp for all the tests it has, the data for this ID will be dropped.')
 
                 if (len(date_columns) > 0) and (len(time_columns) > 0):
                     # fill in missing dates
