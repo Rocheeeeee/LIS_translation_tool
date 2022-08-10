@@ -25,6 +25,12 @@ Suggest using Microsoft Edge to access this application.
 6. Go to **LIS Tranlation** page and redo the translation.
 7. If you want to see the summary of the LIS file, visit **Summary Report** page after finish timestamp formatting and translation.
 
+## Resources
+- [Step-by-step user guide](https://docs.google.com/document/d/1H2j5EBeWQNvK_E7SGGuU59ZLjG13a6z3NKJvKjRYaBY/edit?usp=sharing)
+- [Video demo](https://drive.google.com/drive/folders/1hehCyD_QJ6paL-6EwnDkKqZRwCHRA1FP?usp=sharing)
+- [Slides for training session](https://docs.google.com/presentation/d/192N_Rmf7jS3psbYmfd8UrJrgjRkNZhGCROm8IVeIpJk/edit?usp=sharing)
+
+
 ## Detailed guide for each page
 Select the tabs below to see the detailed instructions for each page.
 """)
