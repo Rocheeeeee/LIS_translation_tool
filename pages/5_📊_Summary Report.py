@@ -21,10 +21,10 @@ st.info('Please standardize the timestamps and translate the LIS test names befo
 with st.expander('Click here to view the instructions'):
     st.markdown("""
     #### Instructions
-1. Select the raw data which timestamps are standardized and test names are translated by this application. **ONLY EXCEL files are accpeted**
-2. Select the sheet name which contains the **Graph Data Worksheet**.
+1. Select the data which timestamps are standardized and test names are translated by this application. **ONLY EXCEL files are accpeted**
+2. Select the sheet name of **Graph Data Worksheet**.
 3. Follow the prompt and select corresponding columns respectively.
-4. Click **Generate Aggregated Report** button to view the result.
+4. Click **Generate Summary Reports** button to view the result.
 5. For each visualization plot, click the three dot icon on the upper-right coner to download the plot.
 6. Click **Download Summary Report** to download the aggregated tables as an Excel file.
     """)
@@ -107,7 +107,7 @@ if uploaded_file is not None:
             assays = raw_data[assay_col].unique()
             # tests the SWC mostly want to look into: BUN and TNT-STAT
             mostly_want_assays = ['BUN', 'BUN5P', 'BUN7', 'TNT-STAT', 'TNT-STAT8']
-            # check if the data contains any 
+            # check if the data contains any of those
             defaults = [value for value in mostly_want_assays if value in assays]
             selected_assay = st.multiselect("The default assays are BUN and TAT-STAT", assays, default = defaults) 
             st.info('We suggest that do not select more than 5 assays at one time, or the display of histograms will be hard to read.')

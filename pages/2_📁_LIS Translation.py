@@ -41,20 +41,20 @@ with st.expander('Click here to view the instructions'):
     st.markdown("""
     #### Instructions
 1. Select the file you want to translate. **ONLY EXCEL files are accpeted**
-2. Select the sheet that contains the raw data.
+2. Select the sheet that contains the **Time Formatted data**.
 3. Select the columns for *patient ID* and *LIS test names*.
-4. Select the columns that you wish to include in the **5 columns worksheet**.
+4. Select the *Priority* and *Test arrival time* columns for the **5 columns worksheet**.
 5. Click the **Upload Raw Data** button to upload.
 6. Select the desired threshold for similarity score with the slide bar. The default score is 80.
 7. Select the platform for chemisty and IA tests. The defaults are c50x and e60x.
 8. (Optional) If you have uploaded your own dictionary at **Update Dictionary** page, please check the box.
-9. After the result file is generated, the **Download Cuttent Result** button will show up. Click the button to download the result.
+9. After the result file is generated, the **Download Current Result** button will show up. Click the button to download the result.
     """)
 
 ## Section 1: Upload the excel file that need translation
-st.header('Upload LIS file')
+st.subheader('Upload the LIS file that has been timestamp formatted')
 uploaded_file = st.file_uploader("Select the file which needs translation:", type=['xlsx'])
-st.info('Please only upload excel file.')
+st.info('Please only upload **EXCEL** file(.xlsx)')
 
 # list to save all LIS_Data objects
 list_of_LIS = []
@@ -69,8 +69,9 @@ if uploaded_file is not None:
     all_sheets = ['(Not Selected Yet)'] + LIS_file.sheet_names
     
     ## User select the sheet name that needs translation
-    selected_sheet = st.selectbox('Select the sheet with LIS file:', all_sheets)
-    st.info("Recommend to select **Formatted Data** sheet. And the sheet name should not exceed 30 characters.")
+    st.subheader('Select the sheet that contains formatted LIS data')
+    selected_sheet = st.selectbox('Sheet names', all_sheets)
+    st.info("Recommend to select **Formatted Data** sheet if the file has formatted the timestamps. And the sheet name should not exceed 30 characters.")
 
     ## to read the selected sheet to dataframe and display the sheet:
     if selected_sheet != '(Not Selected Yet)':
@@ -85,7 +86,8 @@ if uploaded_file is not None:
 
 
         all_columns = ['(Not Selected Yet)'] + list(LIS_sheet.columns)
-        ID_column = st.selectbox("Select the column for patient ID", all_columns)
+        st.subheader('Select the column for patient ID')
+        ID_column = st.selectbox('Patient ID', all_columns)
         if ID_column != '(Not Selected Yet)':
             st.session_state.ID_column = ID_column
             if LIS_sheet[ID_column].isna().sum() > 0:
@@ -93,7 +95,8 @@ if uploaded_file is not None:
             LIS_sheet[ID_column] = LIS_sheet[ID_column].astype(str)
             st.session_state.raw_data = LIS_sheet
 
-        test_name_column = st.selectbox('Select the column for LIS test names', all_columns)
+        st.subheader('Select the column of LIS test names')
+        test_name_column = st.selectbox('LIS test name', all_columns)
         if test_name_column != '(Not Selected Yet)':
             st.session_state.test_name_column = test_name_column
             if LIS_sheet[test_name_column].isna().sum() > 0:
@@ -101,13 +104,10 @@ if uploaded_file is not None:
 
         # Let user select the columns for 5 columns worksheet
         # Patient_ID	Priority	TimeStamp	TestName	Material
+        st.subheader('Select the columns for 5 column worksheet')
         column_options = st.multiselect(
-        'Select the columns for Priority, timestamp of receipt of sample for the 5 column worksheet', LIS_sheet.columns)
-        st.info('Note: assay and material will be updated in a future step.')
-        if len(column_options) > 2:
-            st.warning("You can only select 2 columns at most.")
-        elif len(column_options) == 1:
-            st.warning("You missed selecting one column.")
+        'Select the columns for Priority and timestamp of receipt of sample', LIS_sheet.columns)
+        st.info('Note: Assay and material will be updated in future steps.')
         st.session_state.columns_for_5 = column_options
 
         if st.button('📤 Upload Raw Data'):
@@ -133,13 +133,14 @@ if uploaded_file is not None:
 #=======================================================================================================#
 # User select the threshold
 st.markdown('---')
-st.header('Select the threshold for confidence level')
-threshold = st.slider('Only the tests with similarity higher than threshold will be translated', 0, 100, 80)
+st.subheader('Select the threshold for confidence score')
+threshold = st.slider('Only when the program can find a test with a similarity higher than threshold will be translated', 0, 100, 80)
+st.info('Suggest that do not select a threshold lower than 50')
 st.session_state.threshold = threshold
 
 # User select platform
 st.markdown('---')
-st.header("Select the platform that the tests will be conducted on")
+st.subheader("Select the platform that the tests will be conducted on")
 c_platform = st.radio("Select the platform for chemistry tests", ('c50x', 'c503', 'c70x'))
 e_platform = st.radio("Select the platform for IA tests", ('e60x', 'e80x'))
 
@@ -157,7 +158,7 @@ if e_platform == 'e80x':
 
 # merge the base dictionary with newDict if the user uploaded a new dictionary
 st.markdown('---')
-st.write("Have you uploaded your own dictionary at the **Upload Dictionary** page?")
+st.subheader("Have you uploaded your own dictionary at the **Upload Dictionary** page?")
 upload = st.checkbox('Yes, I uploaded a dictionary.')
 st.info('If this is the first time translating this file or you did not upload your dictionary,\
          please **DO NOT CHECK** the box.')
@@ -275,7 +276,7 @@ if st.button('Click here to start matching'):
         # Patient ID/Assay Name/LIS Test Name/Location-Ward/Priority/
         # Received Time/Verified Time/Lab/Data Origin
         graph_data = result_df.copy()
-        graph_data.drop(['Similar Test', 'Confidence Score'], axis=1, inplace=True)
+        graph_data.drop(['Similar Test','Confidence Score'], axis=1, inplace=True)
         graph_data = graph_data.explode('Assay Name')
         graph_data.reset_index(drop = True, inplace = True)
 
@@ -301,8 +302,9 @@ if st.button('Click here to start matching'):
             st.dataframe(panel_df.style.format({'Confidence Score': '{:.2f}'}))
             st.caption("<NA> means there is no value in the cell")
             st.markdown('---')
-            st.write('The result data with translation and confidence score')
-            st.dataframe(result_df.style.format({'Confidence Score': '{:.2f}'}))
+            st.write('The result data with translations and confidence score')
+            st.dataframe(result_df)
+            # st.dataframe(result_df.style.format({'Confidence Score': '{:.2f}'}))
             st.caption("<NA> means there is no value in the cell")
             st.markdown('---')
             st.write('The 5 column workseet')

@@ -15,13 +15,13 @@ st.set_page_config(page_title="LIS Translation Tool", page_icon='🗃️',
      })
 
 st.title('🗃️LIS File Translation Tool🧰⚙️')
-st.header('📚Upload your dictionary')
+st.header('📚Upload dictionary')
 
 with st.expander('Click here to view the instructions'):
     st.markdown("""
     #### Instructions
-1. Select your dictionary file. **ONLY EXCEL files are accepted**
-2. Select the sheet that contains your dictionary.
+1. Select your the Excel file with panel definitions. **ONLY EXCEL files are accepted**
+2. Select the sheet that contains your panel definitions.
 3. Click the **Upload Dictionary** button to upload.
     """)
 
@@ -43,15 +43,14 @@ st.markdown("""
 """)
 
 st.markdown('---')
-st.subheader('Select the excel file with your panel definitions.')
+st.subheader('Select the **EXCEL** file with your panel definitions')
 uploaded_dict = st.file_uploader("Please make sure the file follows the format above.", type=['xlsx'])
 if uploaded_dict is not None:
     own_dict = pd.ExcelFile(uploaded_dict)
     all_dict_sheets = ['(Not Selected Yet)'] + own_dict.sheet_names
 
     ## User select the sheet name that needs translation
-    st.subheader('Select the sheet with your panel definitions')
-    selected_dict_sheet = st.selectbox('Sheet name:', all_dict_sheets, key='dictionary_selection')
+    selected_dict_sheet = st.selectbox('Select the sheet name:', all_dict_sheets, key='dictionary_selection')
 
     ## to read just one sheet to dataframe and display the sheet:
     if selected_dict_sheet != '(Not Selected Yet)':
