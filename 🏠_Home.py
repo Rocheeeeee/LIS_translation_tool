@@ -14,7 +14,7 @@ st.markdown("""
 # 🏠Guide for LIS Translation Tool
 An online tool for strategic workflow consultants to translate the raw LIS file from customers
 
-Suggest using Microsoft Edge to access this application
+Suggest using Microsoft Edge to access this application.
 
 ## Suggested Steps
 1. Fill in the missing timestamps and standardize the timestamps by the **Timestamps Formatting** page and download the formatted file.
@@ -42,13 +42,13 @@ The page for SWC to fill in the missing timestamps in the raw data and format th
 1. Select the file you want to translate. **ONLY EXCEL files are accpeted**
 2. Select the sheet that contains the raw data.
 3. Select the columns for *patient ID*
-4. Select the timestamp columns which you want to format.
-5. Select the delimiter that the raw file is using to separate data and time in the columns
+4. Select the presentation of timestamp and the timestamp columns which you want to format.
+5. Select the delimiter that the raw file is using to separate date and time in one timestamp columns
 6. Preview the formatted data below. If the result is correct, click **Download Current Result** to download the formatted file.
 
 #### Output
 - An Excel File: "Time Formatted_[date]_[uploaded file name].xlsx"
-    - Time Formatted sheet
+    - Formatted Data
     - Raw Data
 ---
 """)
@@ -59,22 +59,22 @@ tab2.markdown("""
 Translate the LIS test names in raw data based on calculating the string similarity of LIS names to the test names in our base dictionary
 #### Instructions
 1. Select the file you want to translate. **ONLY EXCEL files are accpeted**
-2. Select the sheet that contains the raw data.
+2. Select the sheet that contains the **Time Formatted data**.
 3. Select the columns for *patient ID* and *LIS test names*.
-4. Select the columns that you wish to include in the **5 columns worksheet**.
+4. Select the *Priority* and *Test arrival time* columns for the **5 columns worksheet**.
 5. Click the **Upload Raw Data** button to upload.
 6. Select the desired threshold for similarity score with the slide bar. The default score is 80.
 7. Select the platform for chemisty and IA tests. The defaults are c50x and e60x.
 8. (Optional) If you have uploaded your own dictionary at **Update Dictionary** page, please check the box.
-9. After the result file is generated, the **Download Cuttent Result** button will show up. Click the button to download the result.
+9. After the result file is generated, the **Download Current Result** button will show up. Click the button to download the result.
 
 #### Output
 - An Excel file: "Translated_[date]_[uploaded file name].xlsx"
     - Panel Definitions
     - Graph Data Worksheet
     - 5 Column Worksheet
-    - Raw data with matching results
-    - Formatted Raw Data
+    - Data with translation
+    - Formatted Data
 ---
 """)
 
@@ -92,9 +92,12 @@ The page for SWC to upload their own dictionary or the new panel definiton that 
 > - If a test name corresponds to multiple assays, please type all the assay names in **ONE cell** and separate the assays with commas(,)
 
 #### Instructions
-1. Select your dictionary file. **ONLY EXCEL files are accepted**
-2. Select the sheet that contains your dictionary.
+1. Select your the Excel file with panel definitions. **ONLY EXCEL files are accepted**
+2. Select the sheet that contains your panel definitions.
 3. Click the **Upload Dictionary** button to upload.
+
+#### Output
+- No output
 ---
 """)
 
@@ -103,7 +106,9 @@ The page for SWC to upload their own dictionary or the new panel definiton that 
 tab4.markdown("""
 ### View / Download Base Dictionary
 This page is for SWC to view the base dictionary which this application is using to do the LIS translation.
-- SWC can either view the base dictionary on the web page or clicke the **Download Base Dictionary** button to download the excel file. 
+- SWC can either view the base dictionary on the web page or click the **Download Base Dictionary** button to download the excel file. 
+- If there are wrong translations or new translation that SWC hope to include, fill in the update request form at the buttom of the page.
+
 ---
 """)
 
@@ -111,15 +116,20 @@ tab5.markdown("""
 ### Summary Report
 This page is for SWC to have a clear view about the aggregated result of customer LIS data.
 #### Instructions
-1. Select the raw data which timestamps are standardized and test names are translated by this application. **ONLY EXCEL files are accpeted**
-2. Select the sheet name which contains the **Graph Data Worksheet**.
+1. Select the data which timestamps are standardized and test names are translated by this application. **ONLY EXCEL files are accpeted**
+2. Select the sheet name of **Graph Data Worksheet**.
 3. Follow the prompt and select corresponding columns respectively.
-4. Click **Generate Aggregated Report** button to view the result.
+4. Click **Generate Summary Reports** button to view the result.
 5. For each visualization plot, click the three dot icon on the upper-right coner to download the plot.
 6. Click **Download Summary Report** to download the aggregated tables as an Excel file.
 
 #### Output
 - An Excel file: "Summary for_[uploaded file name].xlsx"
+    - Aggregated by date and hour
+    - Aggregated by date
+    - Aggregated by day of week
+    - Turn around time
+    - Rest of the sheets in the file you uploaded
 """)
 
 st.markdown("""
