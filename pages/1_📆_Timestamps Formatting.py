@@ -24,8 +24,8 @@ with st.expander('Click here to view the instructions'):
 1. Select the file you want to translate. **ONLY EXCEL files are accpeted**
 2. Select the sheet that contains the raw data.
 3. Select the columns for *patient ID*
-4. Select the timestamp columns which you want to format.
-5. Select the delimiter that the raw file is using to separate data and time in the columns
+4. Select the presentation of timestamp and the timestamp columns which you want to format.
+5. Select the delimiter that the raw file is using to separate date and time in one timestamp columns
 6. Preview the formatted data below. If the result is correct, click **Download Current Result** to download the formatted file.
     """)
 
