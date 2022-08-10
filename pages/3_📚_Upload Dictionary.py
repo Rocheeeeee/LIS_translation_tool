@@ -78,7 +78,7 @@ if uploaded_dict is not None:
                         assay = 'NA '
 
                     # if NA is one of the assays, need to add a space behind it so it will not be considered missing value when it parse the string to list by ,
-                    assay = assay.replace("NA," "NA ,")
+                    assay = assay.replace("NA,", "NA ,")
 
                     # for the test without assay, fill na with a space
                     if assay is None:
