@@ -39,7 +39,7 @@ st.info('Please only upload **EXCEL** file(.xlsx)')
 if uploaded_file is not None:
     # get the file name of raw data
     st.session_state.file_name = uploaded_file.name
-    LIS_file = pd.ExcelFile(uploaded_file, engine='openpyxl_wo_formatting')
+    LIS_file = pd.ExcelFile(uploaded_file, engine='openpyxl')
     all_sheets = ['(Not Selected Yet)'] + LIS_file.sheet_names
     
     ## User select the sheet name that needs translation
