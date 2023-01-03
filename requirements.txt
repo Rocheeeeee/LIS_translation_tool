@@ -4,4 +4,16 @@ xlrd == 1.2.0
 numpy == 1.22.0
 pandas == 1.2.2
 xlsxwriter == 3.0.3
+pandas
+plotly
+numpy 
+matplotlib
+sklearn
 scikit-learn
+shapely
+statsmodels
+seaborn
+shapely
+folium
+streamlit-folium
+geopandas
