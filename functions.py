@@ -18,7 +18,7 @@ def load_json(file_name):
 
 
 # Read all sheets in one excel
-@st.cache_resource(allow_output_mutation=True)
+@st.cache_resource
 def load_all_sheets(excel_file):
     df_dict = pd.read_excel(excel_file, sheet_name=None)
     return df_dict
