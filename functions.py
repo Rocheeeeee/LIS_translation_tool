@@ -10,7 +10,7 @@ import difflib
 ## Functions
 
 # load the json file
-@st.cache
+@st.cache_data
 def load_json(file_name):
     with open(file_name, 'r') as f:
         data = json.load(f)
