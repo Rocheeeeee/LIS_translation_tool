@@ -5,6 +5,7 @@ import altair as alt
 from altair import datum
 from datetime import datetime, timedelta
 import functions as f
+import numpy as np
 
 
 st.set_page_config(page_title="LIS Translation Tool", page_icon='🗃️', 
