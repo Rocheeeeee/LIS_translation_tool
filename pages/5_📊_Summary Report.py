@@ -226,7 +226,7 @@ if uploaded_file is not None:
 
                 # slide bar for user to select threshold TAT
                     slider = alt.binding_range(min = 10, max = 600, step=10, name='Threshold:')
-                    threshold_selector = alt.selection_point(name='threshold_selector', fields=['Threshold'], bind=slider, value = {'Threshold':120})
+                    threshold_selector = alt.selection_single(name='threshold_selector', fields=['Threshold'], bind=slider, init = {'Threshold':120})
                 # histogram of test TAT
                     TAT_hist = alt.Chart(tat_df, title='Distribution of test TAT by test priority').mark_bar().encode(
                         alt.X('TAT_minutes', bin=alt.Bin(maxbins=30), title='Turn around time (minutes)'),
@@ -404,4 +404,3 @@ if uploaded_file is not None:
 
                 except ValueError:
                     st.error('ERROR: Your timestamps do not match the designated format. Please visit the **Timestamps Formatting** page to standardize the file before using this function.')
-
