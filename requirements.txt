@@ -1,4 +1,3 @@
-
 openpyxl == 3.0.10
 xlrd == 1.2.0
 numpy == 1.22.0
@@ -17,3 +16,4 @@ shapely
 folium
 streamlit-folium
 geopandas
+
