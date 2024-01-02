@@ -284,7 +284,7 @@ if st.button('Click here to start matching'):
         # 5 columns worksheet
         # the columns that user selected from raw data and translated assay names and material of the test
         columns = [ID_column] + st.session_state.columns_for_5 + ['Material', 'Assay Name']
-        five_column_df = result_df.copy().loc[:, columns]
+        five_column_df = result_df.copy().reindex[:, columns]
         five_column_df = five_column_df.explode('Assay Name')
         five_column_df.reset_index(drop = True, inplace = True)
 
